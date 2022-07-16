@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  database:
+    container_name: database
+    image: mysql:5.7.22
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - core
+    ports:
+      - 3306:3306
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      - core
+  backend:
+    build:
+      context: ./backend
+    container_name: backend
+    volumes:
+      - ./backend/:/var/www
+      - /backend/node_modules
+    networks:
+      - core
+    ports:
+      - 3000:3000
+  redis-bull:
+    container_name: redis-bull
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    volumes:
+      - bull-queue:/data
+    networks:
+      - core
+
+networks:
+  core:
+    driver: bridge
+volumes:
+  mysql-data:
+    driver: local
+  bull-queue:
+    driver: local
