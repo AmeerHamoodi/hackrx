@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -20,15 +20,26 @@ export class UsersService {
   }
 
   /**
+   * Performs count query to determine existance of user by email (faster than fetching everything)
+   * @param email user email
+   * @returns {User | null}
+   */
+  async exists(condition: FindOptionsWhere<User>) {
+    return (await this.repository.count({ where: condition })) > 0;
+  }
+
+  /**
    * Returns only the visible fields (Laravel API resource but JS)
    * @param user
    * @returns {object}
    */
   parseUser(user: User) {
     return {
+      id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      role: user.role,
     };
   }
 }

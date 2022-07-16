@@ -1,3 +1,5 @@
+import { Medication } from 'src/modules/medications/entities/medication.entity';
+import { Referal } from 'src/modules/patients/entities/referal.entity';
 import {
   Entity,
   Column,
@@ -5,8 +7,14 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
+  OneToMany,
 } from 'typeorm';
 
+export enum Role {
+  Pharmacist = 'pharmacist',
+  Doctor = 'doctor',
+  Patient = 'patient',
+}
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -23,6 +31,21 @@ export class User extends BaseEntity {
 
   @Column('longtext')
   password: string;
+
+  @Column({ type: 'enum', enum: Role, default: 'patient' })
+  role: Role;
+
+  @OneToMany(() => Medication, (medication) => medication.patient)
+  medicationsPrescribedToMe: Medication[];
+
+  @OneToMany(() => Medication, (medication) => medication.pharmacist)
+  medicationsPrescribedByMe: Medication[];
+
+  @OneToMany(() => Referal, (referal) => referal.referringDoctor)
+  referedByMe: Referal[];
+
+  @OneToMany(() => Referal, (referal) => referal.pharmacist)
+  referals: Referal;
 
   @CreateDateColumn({
     type: 'timestamp',

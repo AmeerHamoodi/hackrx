@@ -14,7 +14,6 @@ export class RegisterDto {
 
   @IsNotEmpty()
   @IsEmail()
-  @IsUnique('users')
   email: string;
 
   @IsNotEmpty()

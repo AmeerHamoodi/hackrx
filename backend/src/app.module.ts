@@ -6,6 +6,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { MedicationsModule } from './modules/medications/medications.module';
+import { PatientsModule } from './modules/patients/patients.module';
+import { PharmacistsModule } from './modules/pharmacists/pharmacists.module';
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { UsersModule } from './modules/users/users.module';
         migrations: ['dist/database/migrations/*.{ts,js}'],
         migrationsTableName: 'typeorm_migrations',
         synchronize: true,
+        // logging: true,
       }),
     }),
     AuthModule,
@@ -36,6 +40,9 @@ import { UsersModule } from './modules/users/users.module';
         secret: configService.get('APP_KEY'),
       }),
     }),
+    MedicationsModule,
+    PatientsModule,
+    PharmacistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -47,6 +47,14 @@ services:
       - bull-queue:/data
     networks:
       - core
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend/:/usr/src/app
+    ports:
+      - 3001:3001
 
 networks:
   core:

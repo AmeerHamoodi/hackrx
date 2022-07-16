@@ -3,10 +3,12 @@ import {
   Controller,
   HttpException,
   HttpStatus,
+  Param,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { Role } from '../users/entities/user.entity';
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
 import { PASSWORD_REGEX } from './constants';
@@ -20,8 +22,13 @@ export class AuthController {
     readonly usersService: UsersService,
   ) {}
 
-  @Post('/register')
-  async register(@Body() request: RegisterDto) {
+  @Post('/register/:role?')
+  async register(@Body() request: RegisterDto, @Param('role') role?: Role) {
+    let userObject = { ...request } as any;
+
+    if (Object.values(Role).includes(role))
+      userObject = { ...userObject, role };
+
     if (PASSWORD_REGEX.test(request.password))
       throw new HttpException(
         {
@@ -32,7 +39,16 @@ export class AuthController {
         HttpStatus.UNPROCESSABLE_ENTITY,
       );
 
-    await this.authService.registerUser(request);
+    if (await this.usersService.findByEmail(request.email))
+      throw new HttpException(
+        {
+          status: HttpStatus.UNPROCESSABLE_ENTITY,
+          message: 'Someone with this email already exists on our platform',
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+
+    await this.authService.registerUser(userObject);
 
     return {
       message: 'You have been successfully registered!',
