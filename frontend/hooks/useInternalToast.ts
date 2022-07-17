@@ -9,6 +9,7 @@ export default function useInternalToast() {
       status: "success",
       description: content,
       title: "Success",
+      isClosable: true,
     });
 
   const info = (content: string) =>
@@ -17,6 +18,7 @@ export default function useInternalToast() {
       status: "info",
       description: content,
       title: "Info",
+      isClosable: true,
     });
 
   const warning = (content: string) =>
@@ -25,6 +27,7 @@ export default function useInternalToast() {
       status: "warning",
       description: content,
       title: "Warning",
+      isClosable: true,
     });
 
   const error = (content: string) =>
@@ -33,6 +36,7 @@ export default function useInternalToast() {
       status: "error",
       description: content,
       title: "Error",
+      isClosable: true,
     });
 
   return { error, warning, success, info };

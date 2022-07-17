@@ -1,4 +1,5 @@
 import axios, { AxiosError } from "axios";
+import Router from "next/router";
 
 export function handleHttpError(error: AxiosError | Error) {
   if (!axios.isAxiosError(error)) return "Something went wrong!";
@@ -17,6 +18,7 @@ export function handleHttpError(error: AxiosError | Error) {
       return errorsInternal;
     // Authentication
     case 401:
+      Router.push("/login");
       return response?.data.message ? response?.data.message : response?.data.error;
     // Authorization
     case 403:

@@ -47,6 +47,9 @@ export class User extends BaseEntity {
   @OneToMany(() => Referal, (referal) => referal.pharmacist)
   referals: Referal;
 
+  @Column('text', { nullable: true })
+  doxyLink?: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

@@ -1,4 +1,4 @@
-import { User } from 'src/modules/users/entities/user.entity';
+import { Referal } from 'src/modules/patients/entities/referal.entity';
 import {
   Entity,
   Column,
@@ -9,25 +9,16 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-@Entity({ name: 'medications' })
-export class Medication extends BaseEntity {
+@Entity({ name: 'pharmacistNote' })
+export class PharmacistNote extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('text')
-  name: string;
-
-  @Column('text')
-  dosage: string;
-
   @Column('longtext')
-  instructions: string;
+  content: string;
 
-  @ManyToOne(() => User, (user) => user.medicationsPrescribedToMe)
-  patient: User;
-
-  @ManyToOne(() => User, (user) => user.medicationsPrescribedByMe)
-  pharmacist: User;
+  @ManyToOne(() => Referal, (referal) => referal.pharmacistNotes)
+  referal: Referal;
 
   @CreateDateColumn({
     type: 'timestamp',

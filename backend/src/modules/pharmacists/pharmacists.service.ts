@@ -8,6 +8,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone.js';
 import { UsersService } from '../users/users.service';
 import { PatientsService } from '../patients/patients.service';
+import { PharmacistNote } from '../patients/entities/pharmacist-note.entity';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -17,6 +18,8 @@ export class PharmacistsService {
   constructor(
     @InjectRepository(Availability)
     readonly repository: Repository<Availability>,
+    @InjectRepository(PharmacistNote)
+    readonly noteRepository: Repository<PharmacistNote>,
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => PatientsService))
     private readonly patientsService: PatientsService,
@@ -96,7 +99,7 @@ export class PharmacistsService {
         select: ['date'],
       })
     ).map((app) => {
-      app.patient = this.usersService.parseUser(app.patient) as User;
+      app.patient = this.usersService.parseUser(app.patient) as any;
       return app;
     });
   }

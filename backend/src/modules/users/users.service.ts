@@ -40,6 +40,8 @@ export class UsersService {
       lastName: user.lastName,
       email: user.email,
       role: user.role,
+      medications: user.medicationsPrescribedToMe,
+      doxyLink: user.doxyLink,
     };
   }
 }

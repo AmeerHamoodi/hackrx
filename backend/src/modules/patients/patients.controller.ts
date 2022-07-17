@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt.guard';
+import { MedicationsService } from '../medications/medications.service';
 import { Role } from '../users/entities/user.entity';
 import { RolesGuard } from '../users/guards/roles.guard';
 import { Roles } from '../users/roles.decorator';
@@ -24,6 +25,7 @@ export class PatientsController {
   constructor(
     private readonly patientsService: PatientsService,
     private readonly usersService: UsersService,
+    private readonly medicationsService: MedicationsService,
   ) {}
 
   @Roles(Role.Doctor)
@@ -57,7 +59,21 @@ export class PatientsController {
       pharmacistId: +pharmacistId,
       patientId: +patientId,
       notes: request.notes,
+      diagnosis: request.diagnosis,
     });
+    const patient = await this.usersService.repository.findOne({
+      where: { id: +patientId },
+    });
+
+    await Promise.all(
+      request.medications.map(async (med) => {
+        return await this.medicationsService.create({
+          ...med,
+          pharmacist: httpRequest.user,
+          patient,
+        });
+      }),
+    );
 
     return {
       message: 'Successfully refered patient to pharmacist',
@@ -73,5 +89,23 @@ export class PatientsController {
   @Get('')
   async getPatients() {
     return await this.patientsService.getPatients();
+  }
+
+  @Roles(Role.Pharmacist)
+  @Get(':id')
+  async getPatient(@Param('id') patientId: string) {
+    const patient = await this.usersService.repository.findOne({
+      where: { id: +patientId },
+      relations: ['medicationsPrescribedToMe'],
+    });
+
+    const referal = await this.patientsService.repository.findOne({
+      where: { patient: { id: +patientId } },
+      relations: ['referringDoctor', 'referringDoctor'],
+    });
+
+    delete referal.createdAt;
+
+    return { ...this.usersService.parseUser(patient), referal };
   }
 }

@@ -1157,6 +1157,14 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tinymce/tinymce-react@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-4.1.0.tgz#e2a5e289dc1af03837365bebe969b1a722bf6d99"
+  integrity sha512-7qXheXhyY9a8mY5tXQUz3BFq+Z4TQ7zd/OIaKasbVzojkjCw3VWdwFhHOEcwmDDprepgQwECsYqe3AGOtehfFg==
+  dependencies:
+    prop-types "^15.6.2"
+    tinymce "^6.0.0 || ^5.5.1"
+
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.4.tgz#8467d4b3c087805d63580480890791277ce35c44"
@@ -3231,6 +3239,11 @@ tiny-invariant@^1.0.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/tiny-invariant/-/tiny-invariant-1.2.0.tgz#a1141f86b672a9148c72e978a19a73b9b94a15a9"
   integrity sha512-1Uhn/aqw5C6RI4KejVeTg6mIS7IqxnLJ8Mv2tV5rTc0qWobay7pDUz6Wi392Cnc8ak1H0F2cjoRzb2/AW4+Fvg==
+
+"tinymce@^6.0.0 || ^5.5.1":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-6.1.0.tgz#a5e13307646f2e6e1fd2923dcb664647afe3a93c"
+  integrity sha512-IdSdMlmuyhpEpUuabhBUaRC2NzZZxP2/CO/F+/54kTaAifB1Et5mKEty03pJYZxl6GBdFgclKRA2UU5JKJtJbA==
 
 to-fast-properties@^2.0.0:
   version "2.0.0"

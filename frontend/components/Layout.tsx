@@ -11,7 +11,7 @@ interface ILayoutProps {
 export default function Layout({ children }: ILayoutProps) {
   const { isAuth } = useAuth();
   return isAuth ? (
-    <Flex w="full" h="100vh">
+    <Flex w="full" minH="100vh">
       <Sidebar />
       <TopBar />
       <Box flex={1} p="6" pt="16" bgColor="gray.100">

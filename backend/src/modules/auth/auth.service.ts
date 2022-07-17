@@ -28,7 +28,7 @@ export class AuthService {
   /**
    * Create user based on registeration parameters
    */
-  async registerUser({ firstName, lastName, email, password, role }) {
+  async registerUser({ firstName, lastName, email, password, role, doxyLink }) {
     const hashedPassword = await hash(password, await genSalt(10));
 
     const user = await this.usersService.repository.insert({
@@ -37,6 +37,7 @@ export class AuthService {
       email,
       password: hashedPassword,
       role,
+      doxyLink,
     });
 
     return user;

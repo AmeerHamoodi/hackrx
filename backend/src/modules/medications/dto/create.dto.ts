@@ -1,10 +1,4 @@
-import {
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
 export class CreateDto {
   @IsNotEmpty()
@@ -25,9 +19,4 @@ export class CreateDto {
   @IsNotEmpty()
   @IsNumber()
   patientId: number;
-
-  @IsOptional()
-  @IsString()
-  @Length(0, 1500)
-  opinion: string;
 }

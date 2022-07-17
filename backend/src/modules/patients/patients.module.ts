@@ -5,6 +5,7 @@ import { UsersModule } from '../users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Referal } from './entities/referal.entity';
 import { PharmacistsModule } from '../pharmacists/pharmacists.module';
+import { MedicationsModule } from '../medications/medications.module';
 
 @Module({
   providers: [PatientsService],
@@ -13,6 +14,7 @@ import { PharmacistsModule } from '../pharmacists/pharmacists.module';
     UsersModule,
     TypeOrmModule.forFeature([Referal]),
     forwardRef(() => PharmacistsModule),
+    MedicationsModule,
   ],
   exports: [PatientsService],
 })

@@ -9,7 +9,9 @@ import {
   JoinColumn,
   ManyToOne,
   Column,
+  OneToMany,
 } from 'typeorm';
+import { PharmacistNote } from './pharmacist-note.entity';
 
 @Entity({ name: 'referals' })
 export class Referal extends BaseEntity {
@@ -28,6 +30,12 @@ export class Referal extends BaseEntity {
 
   @Column('longtext', { nullable: true })
   notes: string;
+
+  @Column('longtext')
+  diagnosis: string;
+
+  @OneToMany(() => PharmacistNote, (pharmacistNote) => pharmacistNote.referal)
+  pharmacistNotes: PharmacistNote[];
 
   @CreateDateColumn({
     type: 'timestamp',

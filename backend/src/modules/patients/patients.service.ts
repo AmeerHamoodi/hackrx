@@ -24,11 +24,13 @@ export class PatientsService {
     patientId,
     pharmacistId,
     notes = null,
+    diagnosis,
   }: {
     doctorId: number;
     patientId: number;
     pharmacistId: number;
     notes?: string | null;
+    diagnosis: string;
   }) {
     const doctor = await this.usersService.repository.findOne({
       where: { id: doctorId },
@@ -45,6 +47,7 @@ export class PatientsService {
       patient,
       pharmacist,
       notes,
+      diagnosis,
     });
   }
 
@@ -56,7 +59,7 @@ export class PatientsService {
         select: ['date', 'pharmacist'],
       })
     ).map((app) => {
-      app.pharmacist = this.usersService.parseUser(app.pharmacist) as User;
+      app.pharmacist = this.usersService.parseUser(app.pharmacist) as any;
       return app;
     });
   }

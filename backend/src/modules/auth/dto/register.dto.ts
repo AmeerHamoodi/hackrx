@@ -1,5 +1,10 @@
-import { IsEmail, IsNotEmpty, Length, IsString } from 'class-validator';
-import { IsUnique } from 'src/shared/decorators/unique.decorator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  Length,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 
 export class RegisterDto {
   @IsNotEmpty()
@@ -20,4 +25,8 @@ export class RegisterDto {
   @IsString()
   @Length(8, 50)
   password: string;
+
+  @IsOptional()
+  @IsString()
+  doxyLink?: string;
 }
