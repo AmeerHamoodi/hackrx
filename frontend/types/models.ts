@@ -50,3 +50,8 @@ export interface INoteReport {
     patient: IUser;
   };
 }
+
+export interface ISuggestion {
+  message: string;
+  medication: IMedication;
+}

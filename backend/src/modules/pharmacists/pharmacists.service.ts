@@ -9,6 +9,7 @@ import timezone from 'dayjs/plugin/timezone.js';
 import { UsersService } from '../users/users.service';
 import { PatientsService } from '../patients/patients.service';
 import { PharmacistNote } from '../patients/entities/pharmacist-note.entity';
+import { Suggestion } from '../patients/entities/suggestion.entity';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -23,6 +24,8 @@ export class PharmacistsService {
     private readonly usersService: UsersService,
     @Inject(forwardRef(() => PatientsService))
     private readonly patientsService: PatientsService,
+    @InjectRepository(Suggestion)
+    readonly suggestionRepository: Repository<Suggestion>,
   ) {}
 
   async clearAvailabilities(pharmacistId: string) {
@@ -101,6 +104,16 @@ export class PharmacistsService {
     ).map((app) => {
       app.patient = this.usersService.parseUser(app.patient) as any;
       return app;
+    });
+  }
+
+  async getMedicationSuggestions(noteId: string) {
+    return await this.suggestionRepository.find({
+      where: {
+        pharmacistNote: { id: +noteId },
+      },
+      relations: ['medication'],
+      select: ['message', 'medication'],
     });
   }
 }

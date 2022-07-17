@@ -24,13 +24,14 @@ import Layout from "../../components/Layout";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import API from "../../libs/api";
-import { IPatient } from "../../types/models";
+import { IMedication, IPatient } from "../../types/models";
 import useSWR from "swr";
 import { BsFillTrashFill, BsPencilSquare } from "react-icons/bs";
 import MedicationModal from "../../components/optimizer/MedicationModal";
 import useInternalToast from "../../hooks/useInternalToast";
 import { handleHttpError } from "../../libs/error-handler";
 import Suggestions from "../../components/optimizer/Suggestions";
+import { MEDICATION_SUGGESTION_MAP } from "../../libs/medication-suggestion-map";
 
 export default function Optimizer() {
   const editorRef = useRef<any>();
@@ -41,6 +42,7 @@ export default function Optimizer() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { success, error } = useInternalToast();
   const [removeLoading, setRemoveLoading] = useState<(number | string)[]>([]);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
 
   const patient = data as IPatient;
 
@@ -64,16 +66,38 @@ export default function Optimizer() {
 
   async function saveNote() {
     try {
+      const relatedSuggestions = suggestions.map((medicationName) => {
+        const message =
+          MEDICATION_SUGGESTION_MAP[
+            medicationName.split(" ")[0].toUpperCase() as keyof typeof MEDICATION_SUGGESTION_MAP
+          ];
+
+        const medicationId = (
+          patient.medications.find((medication) => {
+            return medication.name === medicationName;
+          }) as IMedication
+        ).id;
+
+        console.log(medicationId);
+
+        return {
+          message,
+          medicationId,
+        };
+      });
+
       const { data }: { data: { id: number } } = await API.post(
         "/pharmacists/note/" + patient.referal.id,
         {
           content: editorRef.current.getContent(),
+          suggestions: relatedSuggestions,
         }
       );
 
       success("Successfully saved note!");
       router.push(`/optimizer/report/${data.id}`);
     } catch (errorOb: any) {
+      console.log(errorOb);
       const errorMessage = handleHttpError(errorOb);
       if (Array.isArray(errorMessage)) errorMessage.forEach((err) => error(err));
       else error(errorMessage);
@@ -129,6 +153,9 @@ export default function Optimizer() {
                   {patient.referal.referringDoctor.lastName}
                 </Text>
               </HStack>
+              <Text color="blue" textDecor="underline" cursor="pointer">
+                Lab values
+              </Text>
             </VStack>
           ) : null}
         </Box>
@@ -197,7 +224,12 @@ export default function Optimizer() {
           <Text fontSize="lg" fontWeight="semibold" mt="4">
             Suggestions
           </Text>
-          {patient ? <Suggestions medications={patient.medications} /> : null}
+          <Text>
+            Please checck the suggestions that you&apos;d like to include in the generated report.
+          </Text>
+          {patient ? (
+            <Suggestions medications={patient.medications} setSuggestions={setSuggestions} />
+          ) : null}
         </Box>
       </SimpleGrid>
     </Layout>

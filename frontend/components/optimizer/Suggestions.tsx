@@ -1,10 +1,11 @@
-import { HStack, Text, VStack } from "@chakra-ui/react";
+import { Checkbox, CheckboxGroup, HStack, Text, useCheckboxGroup, VStack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { MEDICATION_SUGGESTION_MAP } from "../../libs/medication-suggestion-map";
 import { IMedication } from "../../types/models";
 
 interface ISuggestionProps {
   medications: IMedication[];
+  setSuggestions: (values: string[]) => void;
 }
 
 interface ISuggestion {
@@ -12,7 +13,10 @@ interface ISuggestion {
   key: string;
 }
 
-export default function Suggestions({ medications }: ISuggestionProps) {
+export default function Suggestions({
+  medications,
+  setSuggestions: setSelectedSuggestions,
+}: ISuggestionProps) {
   const [suggestions, setSuggestions] = useState<ISuggestion[]>([]);
 
   useEffect(() => {
@@ -20,6 +24,7 @@ export default function Suggestions({ medications }: ISuggestionProps) {
       medications
         .map((med) => {
           const medMapKey = med.name.split(" ")[0].toUpperCase();
+
           if (medMapKey in MEDICATION_SUGGESTION_MAP)
             return {
               message:
@@ -33,13 +38,15 @@ export default function Suggestions({ medications }: ISuggestionProps) {
   }, [medications]);
 
   return (
-    <VStack>
+    <CheckboxGroup onChange={(values) => setSelectedSuggestions(values as string[])}>
       {suggestions.map((suggestion, i) => (
-        <HStack key={`suggestion_${i}`}>
-          <Text fontWeight="bold">{suggestion.key}:</Text>
-          <Text>{suggestion.message}</Text>
-        </HStack>
+        <Checkbox key={`suggestion_${i}`} value={suggestion.key}>
+          <HStack>
+            <Text fontWeight="bold">{suggestion.key}:</Text>
+            <Text>{suggestion.message}</Text>
+          </HStack>
+        </Checkbox>
       ))}
-    </VStack>
+    </CheckboxGroup>
   );
 }

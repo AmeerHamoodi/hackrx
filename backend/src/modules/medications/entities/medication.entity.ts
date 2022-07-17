@@ -1,3 +1,4 @@
+import { Suggestion } from 'src/modules/patients/entities/suggestion.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import {
   Entity,
@@ -7,6 +8,8 @@ import {
   UpdateDateColumn,
   BaseEntity,
   ManyToOne,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'medications' })
@@ -28,6 +31,9 @@ export class Medication extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.medicationsPrescribedByMe)
   pharmacist: User;
+
+  @OneToMany(() => Suggestion, (suggestion) => suggestion.medication)
+  suggestions: Suggestion[];
 
   @CreateDateColumn({
     type: 'timestamp',

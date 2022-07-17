@@ -7,7 +7,9 @@ import {
   UpdateDateColumn,
   BaseEntity,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
+import { Suggestion } from './suggestion.entity';
 
 @Entity({ name: 'pharmacistNote' })
 export class PharmacistNote extends BaseEntity {
@@ -19,6 +21,9 @@ export class PharmacistNote extends BaseEntity {
 
   @ManyToOne(() => Referal, (referal) => referal.pharmacistNotes)
   referal: Referal;
+
+  @OneToMany(() => Suggestion, (suggestion) => suggestion.pharmacistNote)
+  suggestions: Suggestion[];
 
   @CreateDateColumn({
     type: 'timestamp',

@@ -105,6 +105,23 @@ export class PharmacistsController {
       referal,
     });
 
+    const note = await this.pharmacistsService.noteRepository.findOne({
+      where: { id: response.identifiers[0].id },
+    });
+
+    await Promise.all(
+      request.suggestions.map(async (suggestion) => {
+        const med = await this.medicationsService.repository.findOne({
+          where: { id: +suggestion.medicationId },
+        });
+        return await this.pharmacistsService.suggestionRepository.insert({
+          message: suggestion.message,
+          medication: med,
+          pharmacistNote: note,
+        });
+      }),
+    );
+
     return response.identifiers[0];
   }
 
@@ -121,7 +138,10 @@ export class PharmacistsController {
         pharmacist: { id: note.referal.pharmacist.id },
       },
     });
+    const suggestions = await this.pharmacistsService.getMedicationSuggestions(
+      id,
+    );
 
-    return { note, medications };
+    return { note, medications, suggestions };
   }
 }

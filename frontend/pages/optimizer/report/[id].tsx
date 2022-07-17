@@ -1,8 +1,22 @@
-import { Box, Flex, Text, Table, Thead, Th, Td, Tr, Tbody, HStack, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Text,
+  Table,
+  Thead,
+  Th,
+  Td,
+  Tr,
+  Tbody,
+  HStack,
+  VStack,
+  SimpleGrid,
+  GridItem,
+} from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import API from "../../../libs/api";
-import { IMedication, INoteReport } from "../../../types/models";
+import { IMedication, INoteReport, ISuggestion } from "../../../types/models";
 
 export default function Report() {
   const router = useRouter();
@@ -12,11 +26,12 @@ export default function Report() {
 
   const note = data?.note as INoteReport;
   const medications = data?.medications as IMedication[];
+  const suggestions = data?.suggestions as ISuggestion[];
 
   return (
     <Box w="full" h="full" bg="gray.200">
       <Flex justifyContent="center" py="10">
-        <Box bg="white" shadow="md" minH="1056px" w="816px" p="2">
+        <Box bg="white" shadow="md" minH="1056px" w="816px" p="6">
           <Flex justifyContent="center">
             <img
               src="https://lh6.googleusercontent.com/MgU82xUVe-I-cPjNMMNEKF_xKs4SYrI2uHvkuiBWZVGmu3aN6kvvBP7I3iwLb1r4C2sRPeJINVBpISaj75FH=w1920-h942"
@@ -27,7 +42,7 @@ export default function Report() {
           </Flex>
           <VStack align="flex-start" spacing={0} pt="4" pb="6">
             <Text>
-              {note.referal.pharmacist.firstName} {note.referal.pharmacist.lastName}
+              {note?.referal.pharmacist.firstName} {note?.referal.pharmacist.lastName}
             </Text>
             <Text>Orchadview Pharmacy</Text>
             <Text>155 Main St. E #107, L3M 1P2</Text>
@@ -38,15 +53,16 @@ export default function Report() {
           <Text>To whom it may concern,</Text>
           <br />
           <Text>
-            Please find the auto-generated optiMed report below for {note.referal.patient.firstName}{" "}
-            {note.referal.patient.lastName} that was created by {note.referal.pharmacist.firstName}{" "}
-            {note.referal.pharmacist.lastName}, a board certified pharmacist.
+            Please find the auto-generated optiMed report below for{" "}
+            {note?.referal.patient.firstName} {note?.referal.patient.lastName} that was created by{" "}
+            {note?.referal.pharmacist.firstName} {note?.referal.pharmacist.lastName}, a board
+            certified pharmacist.
           </Text>
           <Text fontSize="2xl" fontWeight="bold" mt="12">
             Pharmacuetical Opinion:
           </Text>
           {note?.content ? (
-            <div dangerouslySetInnerHTML={{ __html: note.content }}></div>
+            <div dangerouslySetInnerHTML={{ __html: note?.content }}></div>
           ) : (
             <Text>No pharmaceutical opinion recorded</Text>
           )}
@@ -76,7 +92,29 @@ export default function Report() {
               </Tbody>
             )}
           </Table>
-          <Text></Text>
+          <Text fontSize="2xl" fontWeight="bold" mt="12">
+            Pharmacist Suggestions:
+          </Text>
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>Medication</Th>
+                <Th>Suggestion</Th>
+              </Tr>
+            </Thead>
+            {medications && (
+              <Tbody>
+                {suggestions.map((suggestion, i) => (
+                  <Tr key={`suggestion_${i}`}>
+                    <Td>
+                      {suggestion.medication.name} {suggestion.medication.dosage}
+                    </Td>
+                    <Td>{suggestion.message}</Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            )}
+          </Table>
         </Box>
       </Flex>
     </Box>

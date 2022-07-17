@@ -7,12 +7,13 @@ import { UsersModule } from '../users/users.module';
 import { PatientsModule } from '../patients/patients.module';
 import { PharmacistNote } from '../patients/entities/pharmacist-note.entity';
 import { MedicationsModule } from '../medications/medications.module';
+import { Suggestion } from '../patients/entities/suggestion.entity';
 
 @Module({
   providers: [PharmacistsService],
   controllers: [PharmacistsController],
   imports: [
-    TypeOrmModule.forFeature([Availability, PharmacistNote]),
+    TypeOrmModule.forFeature([Availability, PharmacistNote, Suggestion]),
     UsersModule,
     forwardRef(() => PatientsModule),
     MedicationsModule,
